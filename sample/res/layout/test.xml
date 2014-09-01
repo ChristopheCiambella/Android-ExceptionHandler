@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+	<Button 
+	    android:id="@+id/nullpointer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="nullpointer"
+	    />
+    
+    <Button 
+	    android:id="@+id/byzero"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="byzero"
+	    />
+	
+    <Button 
+	    android:id="@+id/intent"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="intent"
+	    />
+    
+    <Button 
+	    android:id="@+id/outofbound"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="outofbound"
+	    />
+    
+    <Button 
+	    android:id="@+id/throwex"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="Throw"
+	    />
+    
+</LinearLayout>
