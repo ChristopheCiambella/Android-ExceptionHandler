@@ -26,6 +26,7 @@ public class ExceptionHandler {
 
 	static final String TAG = ExceptionHandler.class.getSimpleName();
 	static final String UNKNOWN = "unknown";
+	static final int VERSION = 2;
 
 	static String sServerUrl = null;
 	static String sStoragePath = null;
@@ -60,7 +61,7 @@ public class ExceptionHandler {
 
 			// Get device informations
 			sDeviceModel = android.os.Build.MODEL;
-			sAndroidVersion = android.os.Build.VERSION.RELEASE;
+			sAndroidVersion = String.valueOf(android.os.Build.VERSION.SDK_INT);
 		} catch (NameNotFoundException e) {
 			Log.e(TAG, "Impossible to grab application informations", e);
 		}
@@ -76,6 +77,10 @@ public class ExceptionHandler {
 
 		// Send stored exception
 		sendStoredStackTraces();
+	}
+	
+	public static int getVersion() {
+		return VERSION;
 	}
 
 	public static void sendStoredStackTraces() {
@@ -105,30 +110,37 @@ public class ExceptionHandler {
 						final StringBuilder contents = new StringBuilder();
 						final BufferedReader input = new BufferedReader(new FileReader(filePath));
 						String line = null;
-						String androidVersion = null;
-						String phoneModel = null;
+		                String appPackage = null;
+		                String appVersionName = null;
+		                String deviceModel = null;
+		                String androidVersion = null;
 						while ((line = input.readLine()) != null) {
-							if (androidVersion == null) {
-								androidVersion = line;
+							if (appPackage == null) {
+								appPackage = line;
 								continue;
-							} else if (phoneModel == null) {
-								phoneModel = line;
+							} else if (appVersionName == null) {
+								appVersionName = line;
+								continue;
+							} else if (deviceModel == null) {
+								deviceModel = line;
+								continue;
+							} else if (androidVersion == null) {
+								androidVersion = line;
 								continue;
 							}
 							contents.append(line);
 							contents.append(System.getProperty("line.separator"));
 						}
 						input.close();
-						String stacktrace;
-						stacktrace = contents.toString();
+						String stacktrace = contents.toString();
 						Log.d(TAG, "Transmitting stack trace: " + stacktrace);
 						// Transmit stack trace with POST request
 						DefaultHttpClient httpClient = new DefaultHttpClient();
 						HttpPost httpPost = new HttpPost(sServerUrl);
 						List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-						nvps.add(new BasicNameValuePair("package_name", sAppPackage));
-						nvps.add(new BasicNameValuePair("package_version", version));
-						nvps.add(new BasicNameValuePair("phone_model", phoneModel));
+						nvps.add(new BasicNameValuePair("package_name", appPackage));
+						nvps.add(new BasicNameValuePair("package_version", appVersionName));
+						nvps.add(new BasicNameValuePair("phone_model", deviceModel));
 						nvps.add(new BasicNameValuePair("android_version", androidVersion));
 						nvps.add(new BasicNameValuePair("stacktrace", stacktrace));
 						httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));

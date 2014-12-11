@@ -45,15 +45,12 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
                 final PrintWriter printWriter = new PrintWriter(result);
                 e.printStackTrace(printWriter);
                 
-                // Build application version
-                final String appVersion = ExceptionHandler.sAppVersionName +" ("+ ExceptionHandler.sAppVersionCode +")";
-            	
                 // Build parameter
                 final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 				nvps.add(new BasicNameValuePair("package_name", ExceptionHandler.sAppPackage));
 				nvps.add(new BasicNameValuePair("package_version", ExceptionHandler.sAppVersionName));
 				nvps.add(new BasicNameValuePair("phone_model", ExceptionHandler.sDeviceModel));
-				nvps.add(new BasicNameValuePair("android_version", appVersion));
+				nvps.add(new BasicNameValuePair("android_version", ExceptionHandler.sAndroidVersion));
 				nvps.add(new BasicNameValuePair("stacktrace", result.toString()));
                 
             	// Send to server
@@ -82,8 +79,10 @@ public class DefaultExceptionHandler implements UncaughtExceptionHandler {
 	                Log.d(TAG, "Writing unhandled exception to: "+ path);
 	                 
 	                BufferedWriter bos = new BufferedWriter(new FileWriter(path));
-	                bos.write(ExceptionHandler.sAndroidVersion + "\n");
+	                bos.write(ExceptionHandler.sAppPackage + "\n");
+	                bos.write(ExceptionHandler.sAppVersionName + "\n");
 	                bos.write(ExceptionHandler.sDeviceModel + "\n");
+	                bos.write(ExceptionHandler.sAndroidVersion + "\n");
 	                bos.write(result.toString());
 	                bos.flush();
 	                // Close up everything
